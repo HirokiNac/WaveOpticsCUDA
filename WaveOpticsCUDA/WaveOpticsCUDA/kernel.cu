@@ -101,47 +101,47 @@ Prop1DCuda(const double _k, const int _dir,
 	size_t memsize2 = _n2 * sizeof(double);
 
 	//1
-	double *dx1 = 0;
-	cudaMalloc((void**)&dx1, memsize1);
-	cudaMemcpy(dx1, _x1, memsize1, cudaMemcpyHostToDevice);
+	double *x1 = 0;
+	cudaMalloc((void**)&x1, memsize1);
+	cudaMemcpy(x1, _x1, memsize1, cudaMemcpyHostToDevice);
 
-	double *dy1 = 0;
-	cudaMalloc((void**)&dy1, memsize1);
-	cudaMemcpy(dy1, _y1, memsize1, cudaMemcpyHostToDevice);
+	double *y1 = 0;
+	cudaMalloc((void**)&y1, memsize1);
+	cudaMemcpy(y1, _y1, memsize1, cudaMemcpyHostToDevice);
 
-	double *du1re = 0;
-	cudaMalloc((void**)&du1re, memsize1);
-	cudaMemcpy(du1re, _u1re, memsize1, cudaMemcpyHostToDevice);
+	double *u1re = 0;
+	cudaMalloc((void**)&u1re, memsize1);
+	cudaMemcpy(u1re, _u1re, memsize1, cudaMemcpyHostToDevice);
 
-	double *du1im = 0;
-	cudaMalloc((void**)&du1im, memsize1);
-	cudaMemcpy(du1im, _u1im, memsize1, cudaMemcpyHostToDevice);
+	double *u1im = 0;
+	cudaMalloc((void**)&u1im, memsize1);
+	cudaMemcpy(u1im, _u1im, memsize1, cudaMemcpyHostToDevice);
 
 	//2
-	double *dx2 = 0;
-	cudaMalloc((void**)&dx2, memsize2);
-	cudaMemcpy(dx2, _x2, memsize2, cudaMemcpyHostToDevice);
+	double *x2 = 0;
+	cudaMalloc((void**)&x2, memsize2);
+	cudaMemcpy(x2, _x2, memsize2, cudaMemcpyHostToDevice);
 
-	double *dy2 = 0;
-	cudaMalloc((void**)&dy2, memsize2);
-	cudaMemcpy(dy2, _y2, memsize2, cudaMemcpyHostToDevice);
+	double *y2 = 0;
+	cudaMalloc((void**)&y2, memsize2);
+	cudaMemcpy(y2, _y2, memsize2, cudaMemcpyHostToDevice);
 
-	double *du2re = 0;
-	cudaMalloc((void**)&du2re, memsize2);
-	//cudaMemcpy(du2re, _u2re, memsize2, cudaMemcpyHostToDevice);
+	double *u2re = 0;
+	cudaMalloc((void**)&u2re, memsize2);
+	//cudaMemcpy(u2re, _u2re, memsize2, cudaMemcpyHostToDevice);
 
-	double *du2im = 0;
-	cudaMalloc((void**)&du2im, memsize2);
-	//cudaMemcpy(du2im, _u2im, memsize2, cudaMemcpyHostToDevice);
+	double *u2im = 0;
+	cudaMalloc((void**)&u2im, memsize2);
+	//cudaMemcpy(u2im, _u2im, memsize2, cudaMemcpyHostToDevice);
 
-	Prop1D_kernel << <numBlock, threads >> > (_k, _dir, _n1, dx1, dy1, du1re, du1im, _n2, dx2, dy2, du2re, du2im);
+	Prop1D_kernel << <numBlock, threads >> > (_k, _dir, _n1, x1, y1, u1re, u1im, _n2, x2, y2, u2re, u2im);
 
 	double* u2re_out = 0;
 	cudaMallocHost((void**)&u2re_out, memsize2);
-	cudaMemcpy(u2re_out, du2re, memsize2, cudaMemcpyDeviceToHost);
+	cudaMemcpy(u2re_out, u2re, memsize2, cudaMemcpyDeviceToHost);
 	double* u2im_out = 0;
 	cudaMallocHost((void**)&u2im_out, memsize2);
-	cudaMemcpy(u2im_out, du2im, memsize2, cudaMemcpyDeviceToHost);
+	cudaMemcpy(u2im_out, u2im, memsize2, cudaMemcpyDeviceToHost);
 
 
 	for (int i = 0; i < _n2; i++)
@@ -152,15 +152,15 @@ Prop1DCuda(const double _k, const int _dir,
 
 
 	//memfree
-	cudaFree(dx1);
-	cudaFree(dy1);
-	cudaFree(du1re);
-	cudaFree(du1im);
+	cudaFree(x1);
+	cudaFree(y1);
+	cudaFree(u1re);
+	cudaFree(u1im);
 
-	cudaFree(dx2);
-	cudaFree(dy2);
-	cudaFree(du2re);
-	cudaFree(du2im);
+	cudaFree(x2);
+	cudaFree(y2);
+	cudaFree(u2re);
+	cudaFree(u2im);
 	cudaFree(u2re_out);
 	cudaFree(u2im_out);
 }
